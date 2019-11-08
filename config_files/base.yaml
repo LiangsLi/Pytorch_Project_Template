@@ -1,0 +1,63 @@
+# yaml 格式说明：
+# （1）注意空格！yaml格式非常严格。双空格开头，冒号后必须有一个空格
+# （2）字符串用单引号引起来
+# （3）浮点数或者科学计数法必须用小数点（否则可能被当做字符串）
+# （4）布尔类型：true，false
+run:
+  cuda: true
+  cpu: false
+  seed: 1234
+  #执行模型：train,dev,inference
+  run_mode: 'train'
+  #只需要指定最大的epoch数量，不需要指定最大steps
+  #可能的选择：80,150
+  max_train_epochs: 20
+  early_stop: false
+  early_stop_epochs: 6
+data_set:
+  data_dir: 'datasets/domain_v2/csv'
+  # GPU 32GB:80; 24GB:64; 12GB:32; 10GB:20
+  per_gpu_train_batch_size: 32
+  # GPU <=12GB:10; >12GB:20或者30
+  per_gpu_eval_batch_size: 10
+  skip_too_long_input: true
+  class_num: 2
+  is_complex: false
+output:
+  output_dir: 'output'
+  log_name: 'parser'
+  save_best_model: false
+encoder:
+  #encoder的类型：bert,transformer,lstm ....
+  encoder: 'bert'
+  encoder_output_dim: 768
+Model:
+  saved_model_path: ''
+CharRNN: 
+Transformer: 
+BERTology:
+  bertology_type: 'bert'
+  #最大长度 必须超过数据集的最大长度（字数）,新闻领域的最大句长可达233
+  max_seq_len: 100
+  #BERT输出的选择方式：last,last_four_sum,last_four_cat,all_sum,attention
+  bertology_output: 'last_four_sum'
+  after_layer: 'none'
+  after_layer_num: 2
+  after_layer_dropout: 0.2
+  layer_attention_dropout: 0.2
+update:
+  scale_loss: false
+  loss_scaling_ratio: 2
+  label_smoothing: 0.03
+  max_grad_norm: 5.0
+  # adam-bert (huggingface版本的adamw); adamw-torch (torch 1.2); adam;
+  optimizer: 'adamw-bert'
+  beta1: 0.9
+  beta2: 0.99
+  eps: 1.0e-12
+  weight_decay: 3.0e-9
+  learning_rate: 5.0e-5
+  # bertDistill:1.0e-6;
+  adam_epsilon: 1.0e-8
+  # bertDistill:0.05;
+  warmup_prop: 0.05
